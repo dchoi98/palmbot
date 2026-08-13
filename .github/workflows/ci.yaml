@@ -1,0 +1,56 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  ament_lint:
+    runs-on: ubuntu-latest
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-resolute-latest
+    strategy:
+      fail-fast: false
+      matrix:
+          linter: [flake8, pep257, uncrustify]
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+    - name: Run ROS 2 linter
+      uses: ros-tooling/action-ros-lint@v0.1
+      with:
+        linter: ${{ matrix.linter }}
+        package-name: |
+          palmbot_description
+
+  firmware-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Run firmware linter
+        uses: cpp-linter/cpp-linter-action@v2
+        with:
+          style: 'Google'
+          repo-root: 'firmware'
+
+  build_and_test_ros2:
+    runs-on: ubuntu-latest
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-resolute-latest
+    steps:
+      - name: Build and test ROS 2 packages
+        uses: ros-tooling/action-ros-ci@v0.4
+        with:
+          target-ros2-distro: lyrical
+
+  build_and_test_firmware:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+      with:
+        submodules: 'recursive'
+    - name: Build and test firmware
+      uses: espressif/esp-idf-ci-action@v1
+      with:
+        esp_idf_version: v6.0
+        target: esp32s3
+        path: 'firmware'
