@@ -1,0 +1,6 @@
+*.pyc
+
+# Ignore colcon build artifacts and output directories
+build/
+install/
+log/
