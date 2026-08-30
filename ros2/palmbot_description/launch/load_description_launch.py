@@ -8,8 +8,8 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    pkg_share = FindPackageShare(package='palmbot_description').find('palmbot_description')
-    default_model_path = os.path.join(pkg_share, 'urdf', 'palmbot_description.xacro')
+    description_pkg_share = FindPackageShare(package='palmbot_description').find('palmbot_description')
+    default_model_path = os.path.join(description_pkg_share, 'urdf', 'palmbot_description.xacro')
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',

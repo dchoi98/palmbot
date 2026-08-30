@@ -9,10 +9,10 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    pkg_share = FindPackageShare(package='palmbot_description').find('palmbot_description')
-    default_model_path = os.path.join(pkg_share, 'urdf', 'palmbot_description.xacro')
-    default_rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
-    load_description_path = os.path.join(pkg_share, 'launch', 'load_description_launch.py')
+    description_pkg_share = FindPackageShare(package='palmbot_description').find('palmbot_description')
+    default_model_path = os.path.join(description_pkg_share, 'urdf', 'palmbot_description.xacro')
+    default_rviz_config_path = os.path.join(description_pkg_share, 'rviz', 'config.rviz')
+    load_description_path = os.path.join(description_pkg_share, 'launch', 'load_description_launch.py')
 
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
