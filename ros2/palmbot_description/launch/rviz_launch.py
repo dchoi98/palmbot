@@ -1,15 +1,15 @@
 import os
 
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    description_pkg_share = FindPackageShare(package='palmbot_description').find('palmbot_description')
+    description_pkg_share = get_package_share_directory('palmbot_description')
     default_model_path = os.path.join(description_pkg_share, 'urdf', 'palmbot_description.xacro')
     default_rviz_config_path = os.path.join(description_pkg_share, 'rviz', 'config.rviz')
     load_description_path = os.path.join(description_pkg_share, 'launch', 'load_description_launch.py')

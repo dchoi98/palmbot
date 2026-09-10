@@ -8,9 +8,10 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    description_pkg_share = get_package_share_directory("palmbot_description")
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    bridge_config_path = os.path.join(current_dir, '..', 'config', 'gz_bridge.yaml')
+    description_pkg_share = get_package_share_directory('palmbot_description')
+    sim_package_share = get_package_share_directory('palmbot_simulation')
+    bridge_config_path = os.path.join(sim_package_share, 'config', 'gz_bridge.yaml')
+    world_path = os.path.join(sim_package_share, 'worlds', 'my_world.sdf')
 
     launch_gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -22,8 +23,7 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            "extra_gazebo_args": "verbose",
-            "gz_args": "empty.sdf",
+            "gz_args": ["-v 4 ", world_path]
         }.items(),
     )
 
