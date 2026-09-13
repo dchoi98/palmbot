@@ -156,7 +156,7 @@
 
         <play_pause>true</play_pause>
         <step>true</step>
-        <start_paused>true</start_paused>
+        <start_paused>false</start_paused>
         <use_event>true</use_event>
 
       </plugin>
@@ -373,13 +373,6 @@
           </contact>
         </sensor>
       </link>
-      <plugin filename="gz-sim-touchplugin-system"
-        name="gz::sim::systems::TouchPlugin">
-        <target>vehicle_blue</target>
-        <namespace>wall</namespace>
-        <time>0.001</time>
-        <enabled>true</enabled>
-      </plugin>
     </model>
   </world>
 </sdf>
