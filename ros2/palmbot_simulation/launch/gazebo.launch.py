@@ -35,7 +35,7 @@ def generate_launch_description():
     load_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                description_pkg_share, "launch", "load_description_launch.py"
+                description_pkg_share, "launch", "load_description.launch.py"
             )
         )
     )
@@ -43,7 +43,7 @@ def generate_launch_description():
     launch_ekf = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                navigation_pkg_share, "launch", "palmbot_ekf_launch.py"
+                navigation_pkg_share, "launch", "ekf.launch.py"
             )
         )
     )

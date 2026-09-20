@@ -17,7 +17,7 @@ def generate_launch_description():
         description_pkg_share, "rviz", "config.rviz"
     )
     load_description_path = os.path.join(
-        description_pkg_share, "launch", "load_description_launch.py"
+        description_pkg_share, "launch", "load_description.launch.py"
     )
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
