@@ -17,6 +17,7 @@ node_names = [
     'bt_navigator'
 ]
 
+
 def generate_launch_description():
     nav2_params_file = LaunchConfiguration('nav2_params_file')
     autostart = LaunchConfigAsBool('autostart')

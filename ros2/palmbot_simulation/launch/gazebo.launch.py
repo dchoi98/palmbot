@@ -13,37 +13,58 @@ def generate_launch_description():
     simulation_pkg_share = get_package_share_directory('palmbot_simulation')
     navigation_pkg_share = get_package_share_directory('palmbot_navigation')
     bridge_config_path = os.path.join(
-        simulation_pkg_share, "config", "gz_bridge.yaml"
+        simulation_pkg_share, 'config', 'gz_bridge.yaml'
     )
     world_path = os.path.join(simulation_pkg_share, 'worlds', 'my_world.sdf')
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+
+    robot_spawn_xy = (1.25, -1.25)
 
     launch_gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 os.path.join(
-                    get_package_share_directory("ros_gz_sim"), "launch"
+                    get_package_share_directory('ros_gz_sim'), 'launch'
                 ),
-                "/gz_sim.launch.py",
+                '/gz_sim.launch.py',
             ]
         ),
         launch_arguments={
-            "gz_args": ["-v 4 ", world_path]
+            'gz_args': ['-r -v 4 ', world_path]
         }.items(),
     )
-
     load_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                description_pkg_share, "launch", "load_description.launch.py"
+                description_pkg_share, 'launch', 'load_description.launch.py'
             )
         )
     )
-
     launch_ekf = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
-                navigation_pkg_share, "launch", "ekf.launch.py"
+                navigation_pkg_share, 'launch', 'ekf.launch.py'
+            )
+        )
+    )
+    launch_slam = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                navigation_pkg_share, 'launch', 'slam.launch.py'
+            )
+        )
+    )
+    launch_nav2 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                navigation_pkg_share, 'launch', 'nav2.launch.py'
+            )
+        )
+    )
+    launch_rviz = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                simulation_pkg_share, 'launch', 'rviz.launch.py'
             )
         )
     )
@@ -53,26 +74,30 @@ def generate_launch_description():
         executable='create',
         arguments=[
             '-topic', 'robot_description',
-            '-name', 'palmbot'
+            '-name', 'palmbot',
+            '-x', f'{robot_spawn_xy[0]}',
+            '-y', f'{robot_spawn_xy[1]}',
         ],
         parameters=[{'use_sim_time': use_sim_time}]
     )
-
     gz_bridge_node = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         name='ros_gz_bridge',
         output='screen',
         parameters=[{
-        'config_file': bridge_config_path,
-        'use_sim_time': use_sim_time
-    }]
+            'config_file': bridge_config_path,
+            'use_sim_time': use_sim_time
+        }]
     )
 
     return LaunchDescription([
         launch_gazebo,
         load_description,
         launch_ekf,
+        launch_slam,
+        launch_nav2,
         spawn_robot,
-        gz_bridge_node
+        gz_bridge_node,
+        launch_rviz,
     ])
