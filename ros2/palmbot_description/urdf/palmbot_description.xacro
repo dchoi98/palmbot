@@ -224,7 +224,7 @@
       <child_frame_id>base_footprint</child_frame_id>
       <odom_topic>odometry</odom_topic>
       <max_linear_acceleration>0.3</max_linear_acceleration>
-      <max_angular_acceleration>3.14</max_angular_acceleration>
+      <max_angular_acceleration>10.0</max_angular_acceleration>
   </plugin>
   </gazebo>
 

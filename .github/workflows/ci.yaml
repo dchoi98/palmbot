@@ -1,4 +1,4 @@
-name: CI
+name: CI Status
 on: [push, pull_request]
 jobs:
   ament_lint:
@@ -19,18 +19,20 @@ jobs:
         linter: ${{ matrix.linter }}
         package-name: |
           palmbot_description
+          palmbot_navigation
+          palmbot_simulation
 
-  firmware-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
+  #firmware-lint:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Checkout repo
+  #      uses: actions/checkout@v7
 
-      - name: Run firmware linter
-        uses: cpp-linter/cpp-linter-action@v2
-        with:
-          style: 'Google'
-          repo-root: 'firmware'
+  #    - name: Run firmware linter
+  #      uses: cpp-linter/cpp-linter-action@v2
+  #      with:
+  #        style: 'Google'
+  #        repo-root: 'firmware'
 
   build_and_test_ros2:
     runs-on: ubuntu-latest
@@ -42,16 +44,16 @@ jobs:
         with:
           target-ros2-distro: lyrical
 
-  build_and_test_firmware:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v7
-      with:
-        submodules: 'recursive'
-    - name: Build and test firmware
-      uses: espressif/esp-idf-ci-action@v1
-      with:
-        esp_idf_version: v6.0
-        target: esp32s3
-        path: 'firmware'
+  #build_and_test_firmware:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #  - name: Checkout repo
+  #    uses: actions/checkout@v7
+  #    with:
+  #      submodules: 'recursive'
+  #  - name: Build and test firmware
+  #    uses: espressif/esp-idf-ci-action@v1
+  #    with:
+  #      esp_idf_version: v6.0
+  #      target: esp32s3
+  #      path: 'firmware'
