@@ -1,4 +1,5 @@
 # Palmbot
+
 [![CI status.](https://github.com/dchoi98/palmbot/actions/workflows/ci.yaml/badge.svg)](https://github.com/dchoi98/palmbot/actions/workflows/ci.yaml)
 
 Palmbot is a palm-sized differential-drive robot built on ROS 2, measuring 9.2 cm long, 9.6 cm wide, and 7.6 cm tall. The goal is a robot that maps a room with LiDAR, navigates on its own, and docks on a wireless charger when its battery runs low. Autonomous navigation works in simulation, and hardware is in progress.
@@ -42,3 +43,7 @@ palmbot/
 
 ## Licensing
 The contents of `hardware/` are licensed under CERN-OHL-S-2.0. This document and the contents of `docs/` are licensed under CC BY-SA 4.0. All other content in this repository is licensed under GPL-3.0-or-later.
+
+---
+
+© 2026. This work is openly licensed via [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
