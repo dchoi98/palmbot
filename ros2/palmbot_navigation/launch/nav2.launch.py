@@ -14,39 +14,43 @@ node_names = [
     'planner_server',
     'behavior_server',
     'velocity_smoother',
-    'bt_navigator'
+    'bt_navigator',
 ]
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
+    """Launch the Nav2 stack for autonomous navigation."""
     nav2_params_file = LaunchConfiguration('nav2_params_file')
     autostart = LaunchConfigAsBool('autostart')
     use_respawn = LaunchConfigAsBool('use_respawn')
     use_sim_time = LaunchConfigAsBool('use_sim_time')
 
     nav2_params_file_w_subst = ParameterFile(
-        nav2_params_file,
+        param_file=nav2_params_file,
         allow_substs=True,
     )
 
     declare_use_sim_time_argument = DeclareLaunchArgument(
-        'use_sim_time',
+        name='use_sim_time',
         default_value='true',
-        description='Use simulation/Gazebo clock'
+        description='Use simulation/Gazebo clock',
     )
     declare_params_file_argument = DeclareLaunchArgument(
-        'nav2_params_file',
-        default_value=os.path.join(get_package_share_directory('palmbot_navigation'),
-                                   'config', 'nav2_params.yaml'),
+        name='nav2_params_file',
+        default_value=os.path.join(
+            get_package_share_directory('palmbot_navigation'),
+            'config',
+            'nav2_params.yaml',
+        ),
         description='Full path to the ROS 2 parameters file to use for all launched nodes',
     )
     declare_autostart_argument = DeclareLaunchArgument(
-        'autostart',
+        name='autostart',
         default_value='true',
         description='Automatically startup the Nav2 stack',
     )
     declare_use_respawn_argument = DeclareLaunchArgument(
-        'use_respawn',
+        name='use_respawn',
         default_value='False',
         description='Whether to respawn if a node crashes. Applied when composition is disabled.',
     )
@@ -62,9 +66,9 @@ def generate_launch_description():
                 'autostart': autostart,
                 'node_names': node_names,
                 'use_sim_time': use_sim_time,
-                'bond_heartbeat_period': bond_heartbeat_period
+                'bond_heartbeat_period': bond_heartbeat_period,
             }
-        ]
+        ],
     )
     controller_server_node = Node(
         package='nav2_controller',
@@ -72,10 +76,7 @@ def generate_launch_description():
         output='screen',
         respawn=use_respawn,
         respawn_delay=2.0,
-        parameters=[
-            nav2_params_file_w_subst,
-            {'use_sim_time': use_sim_time}
-        ],
+        parameters=[nav2_params_file_w_subst, {'use_sim_time': use_sim_time}],
         remappings=[('cmd_vel', 'cmd_vel_nav')],
     )
     planner_server_node = Node(
@@ -84,10 +85,7 @@ def generate_launch_description():
         output='screen',
         respawn=use_respawn,
         respawn_delay=2.0,
-        parameters=[
-            nav2_params_file_w_subst,
-            {'use_sim_time': use_sim_time}
-        ],
+        parameters=[nav2_params_file_w_subst, {'use_sim_time': use_sim_time}],
     )
     behavior_server_node = Node(
         package='nav2_behaviors',
@@ -95,10 +93,7 @@ def generate_launch_description():
         output='screen',
         respawn=use_respawn,
         respawn_delay=2.0,
-        parameters=[
-            nav2_params_file_w_subst,
-            {'use_sim_time': use_sim_time}
-        ],
+        parameters=[nav2_params_file_w_subst, {'use_sim_time': use_sim_time}],
         remappings=[('cmd_vel', 'cmd_vel_nav')],
     )
     velocity_smoother_node = Node(
@@ -107,11 +102,11 @@ def generate_launch_description():
         output='screen',
         respawn=use_respawn,
         respawn_delay=2.0,
-        parameters=[
-            nav2_params_file_w_subst,
-            {'use_sim_time': use_sim_time}
+        parameters=[nav2_params_file_w_subst, {'use_sim_time': use_sim_time}],
+        remappings=[
+            ('cmd_vel', 'cmd_vel_nav'),
+            ('cmd_vel_smoothed', 'cmd_vel'),
         ],
-        remappings=[('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')],
     )
     bt_navigator_node = Node(
         package='nav2_bt_navigator',
@@ -119,23 +114,20 @@ def generate_launch_description():
         output='screen',
         respawn=use_respawn,
         respawn_delay=2.0,
-        parameters=[
-            nav2_params_file_w_subst,
-            {'use_sim_time': use_sim_time}
-        ],
+        parameters=[nav2_params_file_w_subst, {'use_sim_time': use_sim_time}],
     )
 
-    ld = LaunchDescription()
-
-    ld.add_action(declare_use_sim_time_argument)
-    ld.add_action(declare_params_file_argument)
-    ld.add_action(declare_autostart_argument)
-    ld.add_action(declare_use_respawn_argument)
-    ld.add_action(nav2_lifecycle_manager)
-    ld.add_action(controller_server_node)
-    ld.add_action(planner_server_node)
-    ld.add_action(behavior_server_node)
-    ld.add_action(bt_navigator_node)
-    ld.add_action(velocity_smoother_node)
-
-    return ld
+    return LaunchDescription(
+        [
+            declare_use_sim_time_argument,
+            declare_params_file_argument,
+            declare_autostart_argument,
+            declare_use_respawn_argument,
+            nav2_lifecycle_manager,
+            controller_server_node,
+            planner_server_node,
+            behavior_server_node,
+            bt_navigator_node,
+            velocity_smoother_node,
+        ]
+    )

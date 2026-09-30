@@ -8,7 +8,8 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
+    """Launch Gazebo simulation with robot, navigation, and RViz."""
     description_pkg_share = get_package_share_directory('palmbot_description')
     simulation_pkg_share = get_package_share_directory('palmbot_simulation')
     navigation_pkg_share = get_package_share_directory('palmbot_navigation')
@@ -29,9 +30,7 @@ def generate_launch_description():
                 '/gz_sim.launch.py',
             ]
         ),
-        launch_arguments={
-            'gz_args': ['-r -v 4 ', world_path]
-        }.items(),
+        launch_arguments={'gz_args': ['-r -v 4 ', world_path]}.items(),
     )
     load_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -42,30 +41,22 @@ def generate_launch_description():
     )
     launch_ekf = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                navigation_pkg_share, 'launch', 'ekf.launch.py'
-            )
+            os.path.join(navigation_pkg_share, 'launch', 'ekf.launch.py')
         )
     )
     launch_slam = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                navigation_pkg_share, 'launch', 'slam.launch.py'
-            )
+            os.path.join(navigation_pkg_share, 'launch', 'slam.launch.py')
         )
     )
     launch_nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                navigation_pkg_share, 'launch', 'nav2.launch.py'
-            )
+            os.path.join(navigation_pkg_share, 'launch', 'nav2.launch.py')
         )
     )
     launch_rviz = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                simulation_pkg_share, 'launch', 'rviz.launch.py'
-            )
+            os.path.join(simulation_pkg_share, 'launch', 'rviz.launch.py')
         )
     )
 
@@ -73,31 +64,36 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         arguments=[
-            '-topic', 'robot_description',
-            '-name', 'palmbot',
-            '-x', f'{robot_spawn_xy[0]}',
-            '-y', f'{robot_spawn_xy[1]}',
+            '-topic',
+            'robot_description',
+            '-name',
+            'palmbot',
+            '-x',
+            f'{robot_spawn_xy[0]}',
+            '-y',
+            f'{robot_spawn_xy[1]}',
         ],
-        parameters=[{'use_sim_time': use_sim_time}]
+        parameters=[{'use_sim_time': use_sim_time}],
     )
     gz_bridge_node = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         name='ros_gz_bridge',
         output='screen',
-        parameters=[{
-            'config_file': bridge_config_path,
-            'use_sim_time': use_sim_time
-        }]
+        parameters=[
+            {'config_file': bridge_config_path, 'use_sim_time': use_sim_time}
+        ],
     )
 
-    return LaunchDescription([
-        launch_gazebo,
-        load_description,
-        launch_ekf,
-        launch_slam,
-        launch_nav2,
-        spawn_robot,
-        gz_bridge_node,
-        launch_rviz,
-    ])
+    return LaunchDescription(
+        [
+            launch_gazebo,
+            load_description,
+            launch_ekf,
+            launch_slam,
+            launch_nav2,
+            spawn_robot,
+            gz_bridge_node,
+            launch_rviz,
+        ]
+    )

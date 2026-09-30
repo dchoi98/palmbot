@@ -7,12 +7,19 @@ from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
+    """Launch the robot state publisher and joint state publisher."""
     description_pkg_share = get_package_share_directory('palmbot_description')
     default_model_path = os.path.join(
         description_pkg_share, 'urdf', 'palmbot_description.xacro'
     )
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+
+    declare_model_argument = DeclareLaunchArgument(
+        name='model',
+        default_value=default_model_path,
+        description='Absolute path to robot model file.',
+    )
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
@@ -40,11 +47,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument(
-                name='model',
-                default_value=default_model_path,
-                description='Absolute path to robot model file',
-            ),
+            declare_model_argument,
             robot_state_publisher_node,
             joint_state_publisher_node,
         ]
