@@ -4,3 +4,7 @@
 build/
 install/
 log/
+
+secrets.cmake
+sdkconfig
+sdkconfig.old
